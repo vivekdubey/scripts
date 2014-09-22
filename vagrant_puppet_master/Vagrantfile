@@ -12,15 +12,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
  # config.vm.box = "centos65"
  #config.vm.network "public_network"
-	config.vm.provider :virtualbox do |vb|
-		vb.customize ['modifyvm', :id,'--memory', '1024']
-	end
+	config.vm.define "web" do |web|
+ 		web.vm.network "private_network", ip: "192.168.1.7"
+    web.vm.box = "rails_box"
+  end
+	
+#	config.vm.define "db" do |db|
+ #		db.vm.network "private_network", ip: "192.168.1.8"
+	#	db.vm.box = "rails_box"
+  #end
+	
+	
+  config.vm.define "p_master" do |pm|
+		pm.vm.provider :virtualbox do |vb|
+    	vb.customize ['modifyvm', :id,'--memory', '1024']
+  	end
+    pm.vm.network "private_network", ip: "192.168.1.9"
+    pm.vm.network "forwarded_port", guest: 3000, host: 3000
+    pm.vm.box = "rails_box"
+  end
 
-	config.vm.define "p_master" do |db|
- 		db.vm.network "private_network", ip: "192.168.1.9"
-		db.vm.network "forwarded_port", guest: 3000, host: 3000
-		db.vm.box = "centos65"
-	end
 
 	
   # Disable automatic box update checking. If you disable this, then
